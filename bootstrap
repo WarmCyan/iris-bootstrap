@@ -95,3 +95,11 @@ echo '[[ -f $CONF_DIR/.env_l ]] && . $CONF_DIR/.env_l' >> $home_target/.env
 
 # update the path to include the bin
 echo 'export PATH=${PATH}:$BIN_DIR' >> $home_target/.env
+
+# pull the core repo and start it's initial setup process
+echo "Pulling core IRIS repository..."
+git clone https://github.com/WildfireXIII/iris-core.git $pkg_dir/iris-core
+
+echo "Minimal bootstrap complete."
+echo "Ceding control to core setup protocols..."
+bash $pkg_dir/iris-core/initial_setup.sh
