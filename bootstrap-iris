@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# =========================================
+# IRIS Bootstrap Script
+# Date Created: 2019.12.11
+# Date Edited: 2019.12.11
+# Copyright (c) 2019 Digital Warrior Labs
+# Author: Nathan Martindale
+# =========================================
+
+# meta information
+VERSION="0.1.0"
+VERSION_DATE="2019.12.11"
+
+# color constants
+C_CYAN_L="\033[1;36m"
+C_RED="\033[0;31m"
+C_GREEN="\033[0;32m"
+C_RESET="\033[0m"
+
+# variables
+home_target=$HOME # TODO: check if passed as cmdline arg
+
+# welcome message
+echo -e "\n${C_CYAN_L}IRIS${C_RESET} Bootstrap Script"
+echo -e "Digital Warrior Labs"
+echo -e "\nVersion ${VERSION}"
+echo -e "Date ${VERSION_DATE}"
+
+# NOTE: might be useful to have a log function that prints both to console and log file
+
+# check if a particular program/file exists on the system or not
+function check_tool {
+	echo -en "Checking $1... "
+	if hash $1 2>/dev/null; then 
+		echo -e "${C_GREEN}GOOD${C_RESET}"
+		return 0
+	else
+		echo -e "${C_RED}MISSING${C_RESET}"
+		return 1
+	fi
+}
+
+# find system information 
+#systeminfo=$(cat /etc/os-release)
+
+# check if most core tools available
+echo -e "\nChecking for minimally required software..."
+if ! check_tool git; then
+	if check_tool pacman; then
+		sudo pacman -S git
+	elif check_tool apt-get; then
+		sudo apt-get install git
+	else
+		echo -e "${C_RED}ERROR - No known package manager with which to install git${C_RESET}"
+		# TODO: handling
+		exit
+	fi
+fi
+
+# create core directory structure, these are the folders I've used for the better part of five years
+echo "Creating core directories..."
+
+bin_dir=$home_target/bin
+conf_dir=$home_target/conf
+data_dir=$home_target/data
+lab_dir=$home_target/lab
+lib_dir=$home_target/lib
+pkg_dir=$home_target/pkg
+tmp_dir=$home_target/tmp
+
+echo -e "\t$bin_dir"
+echo -e "\t$conf_dir"
+echo -e "\t$data_dir"
+echo -e "\t$lab_dir"
+echo -e "\t$lib_dir"
+echo -e "\t$pkg_dir"
+echo -e "\t$tmp_dir"
+
+mkdir -p $bin_dir $lib_dir $conf_dir $data_dir $pkg_dir $tmp_dir $lab_dir
+
+# create the .env file
+echo -e "Creating env..."
+echo "export BIN_DIR=\"$bin_dir\"" > $home_target/.env
+echo "export CONF_DIR=\"$conf_dir\"" >> $home_target/.env
+echo "export DATA_DIR=\"$data_dir\"" >> $home_target/.env
+echo "export LAB_DIR=\"$lab_dir\"" >> $home_target/.env
+echo "export LIB_DIR=\"$lib_dir\"" >> $home_target/.env
+echo "export PKG_DIR=\"$pkg_dir\"" >> $home_target/.env
+echo "export TMP_DIR=\"$tmp_dir\"" >> $home_target/.env
+
+# create the local .env file
+touch $conf_dir/.env_l
+echo '[[ -f $CONF_DIR/.env_l ]] && . $CONF_DIR/.env_l' >> $home_target/.env
+
+# update the path to include the bin
+echo 'export PATH=${PATH}:$BIN_DIR' >> $home_target/.env
