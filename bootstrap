@@ -48,8 +48,8 @@ fi
 
 # pull the core repo and start it's initial setup process
 echo "Pulling core IRIS repository..."
-git clone https://github.com/WildfireXIII/iris-core.git $pkg_dir/iris-core
+git clone https://github.com/WildfireXIII/iris-core.git iris-core
 
 echo "Minimal bootstrap complete."
 echo "Ceding control to core setup protocols..."
-bash $pkg_dir/iris-core/setups/initial_setup.sh
+bash iris-core/setups/initial_setup.sh
