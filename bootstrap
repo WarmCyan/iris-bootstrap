@@ -102,4 +102,4 @@ git clone https://github.com/WildfireXIII/iris-core.git $pkg_dir/iris-core
 
 echo "Minimal bootstrap complete."
 echo "Ceding control to core setup protocols..."
-bash $pkg_dir/iris-core/initial_setup.sh
+bash $pkg_dir/iris-core/setups/initial_setup.sh
